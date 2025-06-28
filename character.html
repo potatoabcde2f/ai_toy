@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>角色配置</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(180deg, #f0fff0 0%, #ffe6f2 50%, #e6f3ff 100%);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* iOS Status Bar */
+        .status-bar {
+            height: 44px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #000;
+        }
+
+        .status-left {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-right {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .battery {
+            background: #34c759;
+            width: 25px;
+            height: 12px;
+            border-radius: 2px;
+            position: relative;
+        }
+
+        .battery::after {
+            content: '';
+            position: absolute;
+            right: -3px;
+            top: 3px;
+            width: 2px;
+            height: 6px;
+            background: #34c759;
+            border-radius: 0 1px 1px 0;
+        }
+
+        /* Navigation Header */
+        .nav-header {
+            height: 60px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .nav-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #000;
+        }
+
+        .nav-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 15px;
+            background: rgba(255,182,193,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #ff6b9d;
+        }
+
+        .nav-icon:hover {
+            background: rgba(255,182,193,0.5);
+        }
+
+        /* Content */
+        .content {
+            padding: 20px 20px 120px;
+            height: calc(100vh - 104px);
+            overflow-y: auto;
+        }
+
+        .avatar-section {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-top: 20px;
+        }
+
+        .character-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: url('https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg?auto=compress&cs=tinysrgb&w=400') center/cover;
+            margin: 0 auto 15px;
+            box-shadow: 0 15px 35px rgba(255,182,193,0.3);
+            border: 4px solid rgba(255,255,255,0.8);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .character-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .change-avatar-btn {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff9a9e 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .change-avatar-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .form-section {
+            background: rgba(255,255,255,0.8);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(255,182,193,0.2);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid rgba(255,182,193,0.3);
+            border-radius: 15px;
+            font-size: 16px;
+            background: rgba(255,255,255,0.9);
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            border-color: #ff6b9d;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255,107,157,0.1);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+            font-family: inherit;
+            line-height: 1.5;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .feature-item {
+            background: rgba(255,255,255,0.8);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(255,182,193,0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .feature-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255,182,193,0.3);
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+        }
+
+        .memory-icon {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff9a9e 100%);
+        }
+
+        .emotion-icon {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+        }
+
+        .story-icon {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+        }
+
+        .feature-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255,182,193,0.1);
+        }
+
+        .settings-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .setting-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+
+        .voice-icon {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff9a9e 100%);
+            color: white;
+        }
+
+        .setting-text {
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .setting-value {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 30px;
+            background: #e5e5ea;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: #ff6b9d;
+        }
+
+        .toggle-switch::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 26px;
+            height: 26px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .toggle-switch.active::before {
+            transform: translateX(20px);
+        }
+
+        .action-buttons {
+            position: fixed;
+            bottom: 40px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 15px;
+            border-radius: 25px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .select-btn {
+            background: rgba(255,255,255,0.9);
+            color: #ff6b9d;
+            border: 2px solid #ff6b9d;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff9a9e 100%);
+            color: white;
+            box-shadow: 0 10px 25px rgba(255,107,157,0.3);
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(255,107,157,0.4);
+        }
+
+        /* Home indicator */
+        .home-indicator {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 134px;
+            height: 5px;
+            background: #000;
+            border-radius: 3px;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+    <!-- iOS Status Bar -->
+    <div class="status-bar">
+        <div class="status-left">
+            <span>07:18</span>
+        </div>
+        <div class="status-right">
+            <i class="fas fa-wifi"></i>
+            <span>98</span>
+            <div class="battery"></div>
+        </div>
+    </div>
+
+    <!-- Navigation Header -->
+    <div class="nav-header">
+        <div class="nav-icon">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+        <div class="nav-title">角色配置</div>
+        <div class="nav-icon">
+            <i class="fas fa-ellipsis-h"></i>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        <div class="avatar-section">
+            <div class="character-avatar"></div>
+            <div class="character-name">🌸 爱瑞丝</div>
+            <button class="change-avatar-btn">更换形象</button>
+        </div>
+
+        <div class="form-section">
+            <div class="form-group">
+                <label class="form-label">介绍</label>
+                <textarea class="form-input form-textarea" placeholder="请输入角色介绍">我是温柔的爱瑞丝，最喜欢和小朋友们一起探索美好的世界！我会讲很多有趣的故事，还能陪你聊天，一起度过快乐时光。我知道很多关于动物、植物、科学的小知识，还会唱儿歌、讲笑话。让我们一起探索这个奇妙的世界吧！</textarea>
+            </div>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-icon memory-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="feature-text">长期记忆</div>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon emotion-icon">
+                    <i class="fas fa-smile"></i>
+                </div>
+                <div class="feature-text">情感分析</div>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon story-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="feature-text">故事共创</div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="settings-item">
+                <div class="setting-info">
+                    <div class="setting-icon voice-icon">
+                        <i class="fas fa-volume-up"></i>
+                    </div>
+                    <div>
+                        <div class="setting-text">声音</div>
+                        <div class="setting-value">温柔女声</div>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right" style="color: #c7c7cc;"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <button class="action-btn select-btn">选择角色</button>
+        <button class="action-btn save-btn">保存</button>
+    </div>
+
+    <!-- Home Indicator -->
+    <div class="home-indicator"></div>
+</body>
+</html>

@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>角色选择</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(180deg, #ffe6f2 0%, #e6f3ff 50%, #f0fff0 100%);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* iOS Status Bar */
+        .status-bar {
+            height: 44px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #000;
+        }
+
+        .status-left {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-right {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .battery {
+            background: #34c759;
+            width: 25px;
+            height: 12px;
+            border-radius: 2px;
+            position: relative;
+        }
+
+        .battery::after {
+            content: '';
+            position: absolute;
+            right: -3px;
+            top: 3px;
+            width: 2px;
+            height: 6px;
+            background: #34c759;
+            border-radius: 0 1px 1px 0;
+        }
+
+        /* Header */
+        .header {
+            height: 80px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: url('https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg?auto=compress&cs=tinysrgb&w=400') center/cover;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .header-icons {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: rgba(255,182,193,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #ff6b9d;
+        }
+
+        .header-icon:hover {
+            background: rgba(255,182,193,0.5);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .nav-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 15px;
+            background: rgba(255,182,193,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #ff6b9d;
+        }
+
+        .nav-icon:hover {
+            background: rgba(255,182,193,0.5);
+        }
+
+        /* Character Selection Tabs */
+        .character-tabs {
+            display: flex;
+            background: rgba(255,255,255,0.9);
+            margin: 20px;
+            border-radius: 20px;
+            padding: 8px;
+            box-shadow: 0 10px 30px rgba(255,182,193,0.2);
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .character-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-item {
+            flex: 0 0 auto;
+            padding: 15px 20px;
+            text-align: center;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-right: 8px;
+            white-space: nowrap;
+        }
+
+        .tab-item:last-child {
+            margin-right: 0;
+        }
+
+        .tab-item.active {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff9a9e 100%);
+            color: white;
+            box-shadow: 0 8px 20px rgba(255,107,157,0.3);
+        }
+
+        .tab-item:not(.active) {
+            color: #666;
+        }
+
+        /* Content */
+        .content {
+            padding: 0 20px 140px;
+            height: calc(100vh - 224px);
+            overflow-y: auto;
+        }
+
+        .device-card {
+            border-radius: 25px;
+            padding: 25px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(255,154,158,0.4);
+        }
+
+        .device-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .device-info {
+            flex: 1;
+        }
+
+        .device-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .device-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255,255,255,0.2);
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            color: #fff;
+        }
+
+        .battery-indicator {
+            background: #34c759;
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .online-badge {
+            background: #007aff;
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .character-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid rgba(255,255,255,0.8);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .iris-avatar {
+            background: url('https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg?auto=compress&cs=tinysrgb&w=400') center/cover;
+        }
+
+        .caishen-avatar {
+            background: url('https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg?auto=compress&cs=tinysrgb&w=400') center/cover;
+        }
+
+        .danzai-avatar {
+            background: url('https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg?auto=compress&cs=tinysrgb&w=400') center/cover;
+        }
+
+        .feature-icons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .feature-icon:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .character-description {
+            color: #fff;
+            font-size: 14px;
+            line-height: 1.5;
+            opacity: 0.9;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 15px;
+            border-radius: 20px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .chat-btn {
+            background: rgba(255,255,255,0.9);
+            color: #ff6b9d;
+        }
+
+        .config-btn {
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .quick-action {
+            flex: 1;
+            background: rgba(255,255,255,0.9);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(255,182,193,0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .quick-action:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255,182,193,0.3);
+        }
+
+        .quick-action-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+        }
+
+        .share-icon {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff9a9e 100%);
+        }
+
+        .settings-icon {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+        }
+
+        .quick-action-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Bottom Tab Bar */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 83px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 34px;
+        }
+
+        .tab-item-bottom {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-item-bottom.active {
+            color: #ff6b9d;
+        }
+
+        .tab-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 5px;
+            color: white;
+            font-size: 16px;
+        }
+
+        .tab-item-bottom.active .tab-icon {
+            background: #ff6b9d;
+        }
+
+        .tab-text {
+            font-size: 12px;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .tab-item-bottom.active .tab-text {
+            color: #ff6b9d;
+        }
+
+        /* Home indicator */
+        .home-indicator {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 134px;
+            height: 5px;
+            background: #000;
+            border-radius: 3px;
+            opacity: 0.3;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Character specific styles */
+        .iris-card {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+        }
+
+        .caishen-card {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+        }
+
+        .danzai-card {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+        }
+    </style>
+</head>
+<body>
+    <!-- iOS Status Bar -->
+    <div class="status-bar">
+        <div class="status-left">
+            <span>07:18</span>
+        </div>
+        <div class="status-right">
+            <i class="fas fa-wifi"></i>
+            <span>98</span>
+            <div class="battery"></div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <div class="avatar"></div>
+            <div class="header-icons">
+                <div class="header-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div class="header-icon">
+                    <i class="fas fa-plus"></i>
+                </div>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="nav-icon">
+                <i class="fas fa-ellipsis-h"></i>
+            </div>
+            <div class="nav-icon">
+                <i class="fas fa-circle" style="font-size: 8px;"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Character Selection Tabs -->
+    <div class="character-tabs">
+        <div class="tab-item active" onclick="showCharacter('iris')">🌸 爱瑞丝</div>
+        <div class="tab-item" onclick="showCharacter('caishen')">🎊 四喜财神</div>
+        <div class="tab-item" onclick="showCharacter('danzai')">🥚 蛋仔派对</div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        <!-- 爱瑞丝角色卡片 -->
+        <div id="iris-card" class="character-card">
+            <div class="device-card iris-card">
+                <div class="device-header">
+                    <div class="device-info">
+                        <div class="device-name">🌸 爱瑞丝</div>
+                        <div class="device-status">
+                            <div class="status-indicator">
+                                <i class="fas fa-wifi"></i>
+                            </div>
+                            <div class="battery-indicator">85%</div>
+                            <div class="status-indicator">
+                                <i class="fas fa-link"></i>
+                            </div>
+                            <div class="online-badge">在线</div>
+                        </div>
+                        <div class="feature-icons">
+                            <div class="feature-icon">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div class="feature-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="feature-icon">
+                                <i class="fas fa-magic"></i>
+                            </div>
+                        </div>
+                        <div class="character-description">
+                            我是温柔的爱瑞丝，最喜欢和小朋友们一起探索美好的世界！我会讲很多有趣的故事，还能陪你聊天，一起度过快乐时光...
+                        </div>
+                    </div>
+                    <div class="character-avatar iris-avatar"></div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="action-btn chat-btn">
+                        <i class="fas fa-comments" style="margin-right: 8px;"></i>
+                        查看对话
+                    </button>
+                    <button class="action-btn config-btn">
+                        <i class="fas fa-cog" style="margin-right: 8px;"></i>
+                        角色配置
+                    </button>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <div class="quick-action">
+                    <div class="quick-action-icon share-icon">
+                        <i class="fas fa-share-alt"></i>
+                    </div>
+                    <div class="quick-action-text">分享设备</div>
+                </div>
+                
+                <div class="quick-action">
+                    <div class="quick-action-icon settings-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div class="quick-action-text">设置</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 四喜财神角色卡片 -->
+        <div id="caishen-card" class="character-card hidden">
+            <div class="device-card caishen-card">
+                <div class="device-header">
+                    <div class="device-info">
+                        <div class="device-name">🎊 四喜财神</div>
+                        <div class="device-status">
+                            <div class="status-indicator">
+                                <i class="fas fa-wifi"></i>
+                            </div>
+                            <div class="battery-indicator">92%</div>
+                            <div class="status-indicator">
+                                <i class="fas fa-link"></i>
+                            </div>
+                            <div class="online-badge">在线</div>
+                        </div>
+                        <div class="feature-icons">
+                            <div class="feature-icon">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="feature-icon">
+                                <i class="fas fa-gift"></i>
+                            </div>
+                            <div class="feature-icon">
+                                <i class="fas fa-crown"></i>
+                            </div>
+                        </div>
+                        <div class="character-description">
+                            恭喜发财！我是四喜财神，会给小朋友们带来好运和快乐。我知道很多传统文化故事，还会教你们有趣的知识...
+                        </div>
+                    </div>
+                    <div class="character-avatar caishen-avatar"></div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="action-btn chat-btn">
+                        <i class="fas fa-comments" style="margin-right: 8px;"></i>
+                        查看对话
+                    </button>
+                    <button class="action-btn config-btn">
+                        <i class="fas fa-cog" style="margin-right: 8px;"></i>
+                        角色配置
+                    </button>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <div class="quick-action">
+                    <div class="quick-action-icon share-icon">
+                        <i class="fas fa-share-alt"></i>
+                    </div>
+                    <div class="quick-action-text">分享设备</div>
+                </div>
+                
+                <div class="quick-action">
+                    <div class="quick-action-icon settings-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div class="quick-action-text">设置</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 蛋仔派对角色卡片 -->
+        <div id="danzai-card" class="character-card hidden">
+            <div class="device-card danzai-card">
+                <div class="device-header">
+                    <div class="device-info">
+                        <div class="device-name">🥚 蛋仔派对</div>
+                        <div class="device-status">
+                            <div class="status-indicator">
+                                <i class="fas fa-wifi"></i>
+                            </div>
+                            <div class="battery-indicator">78%</div>
+                            <div class="status-indicator">
+                                <i class="fas fa-link"></i>
+                            </div>
+                            <div class="online-badge">在线</div>
+                        </div>
+                        <div class="feature-icons">
+                            <div class="feature-icon">
+                                <i class="fas fa-gamepad"></i>
+                            </div>
+                            <div class="feature-icon">
+                                <i class="fas fa-music"></i>
+                            </div>
+                            <div class="feature-icon">
+                                <i class="fas fa-rocket"></i>
+                            </div>
+                        </div>
+                        <div class="character-description">
+                            嗨！我是蛋仔派对的小伙伴，最喜欢和大家一起玩游戏啦！我会带你体验各种有趣的冒险，一起探索奇妙世界...
+                        </div>
+                    </div>
+                    <div class="character-avatar danzai-avatar"></div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="action-btn chat-btn">
+                        <i class="fas fa-comments" style="margin-right: 8px;"></i>
+                        查看对话
+                    </button>
+                    <button class="action-btn config-btn">
+                        <i class="fas fa-cog" style="margin-right: 8px;"></i>
+                        角色配置
+                    </button>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <div class="quick-action">
+                    <div class="quick-action-icon share-icon">
+                        <i class="fas fa-share-alt"></i>
+                    </div>
+                    <div class="quick-action-text">分享设备</div>
+                </div>
+                
+                <div class="quick-action">
+                    <div class="quick-action-icon settings-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div class="quick-action-text">设置</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Tab Bar -->
+    <div class="tab-bar">
+        <div class="tab-item-bottom active">
+            <div class="tab-icon">
+                <i class="fas fa-home"></i>
+            </div>
+            <div class="tab-text">设备</div>
+        </div>
+        
+        <div class="tab-item-bottom">
+            <div class="tab-icon">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="tab-text">我的</div>
+        </div>
+    </div>
+
+    <!-- Home Indicator -->
+    <div class="home-indicator"></div>
+
+    <script>
+        function showCharacter(character) {
+            // 隐藏所有角色卡片
+            document.querySelectorAll('.character-card').forEach(card => {
+                card.classList.add('hidden');
+            });
+            
+            // 移除所有tab的active状态
+            document.querySelectorAll('.character-tabs .tab-item').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 显示选中的角色卡片
+            document.getElementById(character + '-card').classList.remove('hidden');
+            
+            // 激活对应的tab
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>

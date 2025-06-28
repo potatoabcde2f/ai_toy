@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>聊天室</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(180deg, #e6f3ff 0%, #ffe6f2 50%, #f0fff0 100%);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* iOS Status Bar */
+        .status-bar {
+            height: 44px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #000;
+        }
+
+        .status-left {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-right {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .battery {
+            background: #34c759;
+            width: 25px;
+            height: 12px;
+            border-radius: 2px;
+            position: relative;
+        }
+
+        .battery::after {
+            content: '';
+            position: absolute;
+            right: -3px;
+            top: 3px;
+            width: 2px;
+            height: 6px;
+            background: #34c759;
+            border-radius: 0 1px 1px 0;
+        }
+
+        /* Navigation Header */
+        .nav-header {
+            height: 60px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .nav-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #000;
+        }
+
+        .nav-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 15px;
+            background: rgba(255,182,193,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #ff6b9d;
+        }
+
+        .nav-icon:hover {
+            background: rgba(255,182,193,0.5);
+        }
+
+        /* Chat Content */
+        .chat-content {
+            height: calc(100vh - 104px);
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .timestamp {
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+            margin: 20px 0;
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 15px;
+            align-items: flex-end;
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin: 0 10px;
+            box-shadow: 0 4px 12px rgba(255,182,193,0.3);
+        }
+
+        .user-avatar {
+            background: url('https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg?auto=compress&cs=tinysrgb&w=400') center/cover;
+        }
+
+        .ai-avatar {
+            background: url('https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg?auto=compress&cs=tinysrgb&w=400') center/cover;
+        }
+
+        .message-bubble {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 20px;
+            position: relative;
+            word-wrap: break-word;
+            line-height: 1.4;
+        }
+
+        .message.user .message-bubble {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff9a9e 100%);
+            color: white;
+            border-bottom-right-radius: 8px;
+            box-shadow: 0 4px 15px rgba(255,107,157,0.3);
+        }
+
+        .message.ai .message-bubble {
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            border: 1px solid rgba(255,182,193,0.2);
+            border-bottom-left-radius: 8px;
+            box-shadow: 0 4px 15px rgba(255,182,193,0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .long-message {
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* Home indicator */
+        .home-indicator {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 134px;
+            height: 5px;
+            background: #000;
+            border-radius: 3px;
+            opacity: 0.3;
+        }
+
+        /* Scrollbar styling */
+        .chat-content::-webkit-scrollbar {
+            width: 3px;
+        }
+
+        .chat-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-content::-webkit-scrollbar-thumb {
+            background: rgba(255,107,157,0.3);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <!-- iOS Status Bar -->
+    <div class="status-bar">
+        <div class="status-left">
+            <span>07:19</span>
+        </div>
+        <div class="status-right">
+            <i class="fas fa-wifi"></i>
+            <span>98</span>
+            <div class="battery"></div>
+        </div>
+    </div>
+
+    <!-- Navigation Header -->
+    <div class="nav-header">
+        <div class="nav-icon">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+        <div class="nav-title">聊天室</div>
+        <div class="nav-icon">
+            <i class="fas fa-ellipsis-h"></i>
+        </div>
+    </div>
+
+    <!-- Chat Content -->
+    <div class="chat-content">
+        <div class="timestamp">19:19</div>
+        
+        <div class="message user">
+            <div class="avatar user-avatar"></div>
+            <div class="message-bubble">你好啊爱瑞丝</div>
+        </div>
+        
+        <div class="message ai">
+            <div class="avatar ai-avatar"></div>
+            <div class="message-bubble long-message">
+                你好呀小朋友！我是温柔的爱瑞丝，很高兴认识你！🌸✨ 我最喜欢和小朋友们一起探索美好的世界！你想听故事吗？还是想和我一起做游戏呢？
+            </div>
+        </div>
+        
+        <div class="message user">
+            <div class="avatar user-avatar"></div>
+            <div class="message-bubble">请你讲个故事</div>
+        </div>
+        
+        <div class="message ai">
+            <div class="avatar ai-avatar"></div>
+            <div class="message-bubble long-message">
+                好呀好呀！我给你讲一个超级温暖的故事！🌟<br><br>
+                从前有一只小兔子，它发现了一朵会发光的花。小兔子想："哇！这朵花好美呀，一定能让森林里的小伙伴们都开心！"可是花朵太娇嫩了，小兔子不知道怎么保护它。<br><br>
+                于是小兔子找来了聪明的猫头鹰老师。猫头鹰告诉它："真正的美好不是占有，而是分享。"小兔子明白了，它邀请所有的小动物一起来欣赏这朵神奇的花。<br><br>
+                从那以后，每当夜晚降临，小动物们都会聚在一起，在花朵温柔的光芒下分享快乐的时光。花朵因为被大家珍爱而变得更加美丽！🌸<br><br>
+                你觉得这个故事怎么样呀？分享真的会让美好的事物变得更美好呢！😊
+            </div>
+        </div>
+    </div>
+
+    <!-- Home Indicator -->
+    <div class="home-indicator"></div>
+</body>
+</html>

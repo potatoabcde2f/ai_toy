@@ -1,0 +1,29 @@
+{
+  "name": "xinchong-ai-toy-companion",
+  "version": "1.0.0",
+  "description": "芯宠工场 AI玩具伙伴 - 可爱儿童版治愈系AI陪伴应用原型",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "serve": "npx serve .",
+    "build": "echo 'No build step required for static HTML'",
+    "deploy:surge": "surge .",
+    "deploy:firebase": "firebase deploy"
+  },
+  "keywords": [
+    "ai",
+    "toy",
+    "companion",
+    "children",
+    "mobile",
+    "prototype",
+    "ui",
+    "ux",
+    "xinchong"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.0"
+  }
+}

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>连接设备</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(180deg, #ffe6f2 0%, #e6f3ff 50%, #f0fff0 100%);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* iOS Status Bar */
+        .status-bar {
+            height: 44px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #000;
+        }
+
+        .status-left {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-right {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .battery {
+            background: #34c759;
+            width: 25px;
+            height: 12px;
+            border-radius: 2px;
+            position: relative;
+        }
+
+        .battery::after {
+            content: '';
+            position: absolute;
+            right: -3px;
+            top: 3px;
+            width: 2px;
+            height: 6px;
+            background: #34c759;
+            border-radius: 0 1px 1px 0;
+        }
+
+        /* Header */
+        .header {
+            height: 80px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: url('https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg?auto=compress&cs=tinysrgb&w=400') center/cover;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .header-icons {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: rgba(255,182,193,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #ff6b9d;
+        }
+
+        .header-icon:hover {
+            background: rgba(255,182,193,0.5);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .nav-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 15px;
+            background: rgba(255,182,193,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #ff6b9d;
+        }
+
+        .nav-icon:hover {
+            background: rgba(255,182,193,0.5);
+        }
+
+        /* Content */
+        .content {
+            padding: 40px 20px;
+            text-align: center;
+            height: calc(100vh - 184px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-cards {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 40px;
+            width: 100%;
+            max-width: 350px;
+        }
+
+        .action-card {
+            flex: 1;
+            background: rgba(255,255,255,0.9);
+            border-radius: 25px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 15px 35px rgba(255,182,193,0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,182,193,0.1);
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(255,182,193,0.3);
+        }
+
+        .action-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 20px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .scan-icon {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff9a9e 100%);
+        }
+
+        .add-icon {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+        }
+
+        .action-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .empty-state {
+            margin-bottom: 40px;
+        }
+
+        .empty-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            background: rgba(255,182,193,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .toy-icon {
+            font-size: 60px;
+        }
+
+        .sad-face {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 30px;
+            height: 30px;
+            background: #ff6b9d;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        .empty-text {
+            font-size: 18px;
+            color: #999;
+            margin-bottom: 30px;
+        }
+
+        .add-device-btn {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff9a9e 100%);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 25px;
+            border: none;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 15px 35px rgba(255,107,157,0.3);
+        }
+
+        .add-device-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(255,107,157,0.4);
+        }
+
+        /* Bottom Tab Bar */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 83px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 34px;
+        }
+
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-item.active {
+            color: #ff6b9d;
+        }
+
+        .tab-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 5px;
+            color: white;
+            font-size: 16px;
+        }
+
+        .tab-item.active .tab-icon {
+            background: #ff6b9d;
+        }
+
+        .tab-text {
+            font-size: 12px;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .tab-item.active .tab-text {
+            color: #ff6b9d;
+        }
+
+        /* Home indicator */
+        .home-indicator {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 134px;
+            height: 5px;
+            background: #000;
+            border-radius: 3px;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+    <!-- iOS Status Bar -->
+    <div class="status-bar">
+        <div class="status-left">
+            <span>07:11</span>
+        </div>
+        <div class="status-right">
+            <i class="fas fa-wifi"></i>
+            <span>98</span>
+            <div class="battery"></div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <div class="avatar"></div>
+            <div class="header-icons">
+                <div class="header-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div class="header-icon">
+                    <i class="fas fa-plus"></i>
+                </div>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="nav-icon">
+                <i class="fas fa-ellipsis-h"></i>
+            </div>
+            <div class="nav-icon">
+                <i class="fas fa-circle" style="font-size: 8px;"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        <div class="action-cards">
+            <div class="action-card">
+                <div class="action-icon scan-icon">
+                    <i class="fas fa-qrcode"></i>
+                </div>
+                <div class="action-text">扫描二维码</div>
+            </div>
+            
+            <div class="action-card">
+                <div class="action-icon add-icon">
+                    <i class="fas fa-plus"></i>
+                </div>
+                <div class="action-text">添加设备</div>
+            </div>
+        </div>
+
+        <div class="empty-state">
+            <div class="empty-icon">
+                <div class="toy-icon">🧸</div>
+                <div class="sad-face">
+                    <span>😢</span>
+                </div>
+            </div>
+            <div class="empty-text">还没有小伙伴呢</div>
+        </div>
+
+        <button class="add-device-btn">添加可爱小伙伴</button>
+    </div>
+
+    <!-- Bottom Tab Bar -->
+    <div class="tab-bar">
+        <div class="tab-item active">
+            <div class="tab-icon">
+                <i class="fas fa-home"></i>
+            </div>
+            <div class="tab-text">设备</div>
+        </div>
+        
+        <div class="tab-item">
+            <div class="tab-icon">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="tab-text">我的</div>
+        </div>
+    </div>
+
+    <!-- Home Indicator -->
+    <div class="home-indicator"></div>
+</body>
+</html>

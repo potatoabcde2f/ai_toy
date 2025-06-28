@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>设备设置</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(180deg, #e6f3ff 0%, #f0fff0 50%, #ffe6f2 100%);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* iOS Status Bar */
+        .status-bar {
+            height: 44px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #000;
+        }
+
+        .status-left {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-right {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .battery {
+            background: #34c759;
+            width: 25px;
+            height: 12px;
+            border-radius: 2px;
+            position: relative;
+        }
+
+        .battery::after {
+            content: '';
+            position: absolute;
+            right: -3px;
+            top: 3px;
+            width: 2px;
+            height: 6px;
+            background: #34c759;
+            border-radius: 0 1px 1px 0;
+        }
+
+        /* Navigation Header */
+        .nav-header {
+            height: 60px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .nav-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #000;
+        }
+
+        .nav-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 15px;
+            background: rgba(255,182,193,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #ff6b9d;
+        }
+
+        .nav-icon:hover {
+            background: rgba(255,182,193,0.5);
+        }
+
+        /* Content */
+        .content {
+            padding: 20px;
+            height: calc(100vh - 104px);
+            overflow-y: auto;
+        }
+
+        .settings-list {
+            background: rgba(255,255,255,0.8);
+            border-radius: 20px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(255,182,193,0.2);
+        }
+
+        .settings-item {
+            padding: 18px 20px;
+            border-bottom: 1px solid rgba(255,182,193,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .settings-item:hover {
+            background: rgba(255,182,193,0.1);
+        }
+
+        .settings-item:last-child {
+            border-bottom: none;
+        }
+
+        .settings-item.danger {
+            color: #ff3b30;
+        }
+
+        .settings-item.danger:hover {
+            background: rgba(255,59,48,0.1);
+        }
+
+        .item-text {
+            font-size: 16px;
+            font-weight: 500;
+            color: #000;
+        }
+
+        .settings-item.danger .item-text {
+            color: #ff3b30;
+        }
+
+        .chevron {
+            color: #c7c7cc;
+            font-size: 14px;
+        }
+
+        /* Home indicator */
+        .home-indicator {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 134px;
+            height: 5px;
+            background: #000;
+            border-radius: 3px;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+    <!-- iOS Status Bar -->
+    <div class="status-bar">
+        <div class="status-left">
+            <span>07:20</span>
+        </div>
+        <div class="status-right">
+            <i class="fas fa-wifi"></i>
+            <span>98</span>
+            <div class="battery"></div>
+        </div>
+    </div>
+
+    <!-- Navigation Header -->
+    <div class="nav-header">
+        <div class="nav-icon">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+        <div class="nav-title">设备设置</div>
+        <div class="nav-icon">
+            <i class="fas fa-ellipsis-h"></i>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        <div class="settings-list">
+            <div class="settings-item">
+                <div class="item-text">
+                    <i class="fas fa-info-circle" style="margin-right: 12px; color: #ff6b9d;"></i>
+                    关于设备
+                </div>
+                <i class="fas fa-chevron-right chevron"></i>
+            </div>
+            
+            <div class="settings-item">
+                <div class="item-text">
+                    <i class="fas fa-cog" style="margin-right: 12px; color: #4ecdc4;"></i>
+                    设备设置
+                </div>
+                <i class="fas fa-chevron-right chevron"></i>
+            </div>
+            
+            <div class="settings-item">
+                <div class="item-text">
+                    <i class="fas fa-share-alt" style="margin-right: 12px; color: #ffd700;"></i>
+                    设备分享
+                </div>
+                <i class="fas fa-chevron-right chevron"></i>
+            </div>
+            
+            <div class="settings-item">
+                <div class="item-text">
+                    <i class="fas fa-language" style="margin-right: 12px; color: #af52de;"></i>
+                    语言设置
+                </div>
+                <i class="fas fa-chevron-right chevron"></i>
+            </div>
+            
+            <div class="settings-item">
+                <div class="item-text">
+                    <i class="fas fa-trash-alt" style="margin-right: 12px; color: #ff6b6b;"></i>
+                    删除所有聊天记录
+                </div>
+                <i class="fas fa-chevron-right chevron"></i>
+            </div>
+        </div>
+
+        <div class="settings-list" style="margin-top: 20px;">
+            <div class="settings-item danger">
+                <div class="item-text">
+                    <i class="fas fa-exclamation-triangle" style="margin-right: 12px;"></i>
+                    删除设备
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Home Indicator -->
+    <div class="home-indicator"></div>
+</body>
+</html>

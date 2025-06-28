@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>芯宠工场 AI玩具伙伴 - 可爱儿童版原型展示</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 30%, #fecfef 70%, #a8e6cf 100%);
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        .app-title {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #fff;
+        }
+
+        .app-title h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 0 3px 15px rgba(0,0,0,0.2);
+        }
+
+        .app-title p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .phone-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(393px, 1fr));
+            gap: 40px;
+            justify-content: center;
+        }
+
+        .phone-container {
+            position: relative;
+            width: 393px;
+            height: 852px;
+            background: #000;
+            border-radius: 45px;
+            padding: 8px;
+            box-shadow: 
+                0 0 0 2px #1a1a1a,
+                0 25px 80px rgba(0,0,0,0.5),
+                inset 0 0 0 1px rgba(255,255,255,0.1);
+            margin: 0 auto;
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            border-radius: 37px;
+            overflow: hidden;
+            background: #f8f9fa;
+            position: relative;
+        }
+
+        .phone-label {
+            position: absolute;
+            bottom: -80px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 18px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            background: rgba(255,255,255,0.1);
+            padding: 12px 16px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            margin: 0 20px;
+            line-height: 1.4;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 37px;
+        }
+
+        /* iPhone notch simulation */
+        .phone-container::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 130px;
+            height: 30px;
+            background: #000;
+            border-radius: 0 0 20px 20px;
+            z-index: 10;
+        }
+
+        /* Dynamic Island effect */
+        .phone-container::after {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 22px;
+            background: #000;
+            border-radius: 11px;
+            z-index: 11;
+        }
+
+        @media (max-width: 1400px) {
+            .phone-grid {
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            }
+            
+            .phone-container {
+                transform: scale(0.9);
+                margin: -40px auto;
+            }
+
+            .phone-label {
+                bottom: -100px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .phone-container {
+                transform: scale(0.8);
+                margin: -60px auto;
+            }
+            
+            .phone-grid {
+                gap: 20px;
+            }
+            
+            .app-title h1 {
+                font-size: 2.2rem;
+            }
+
+            .phone-label {
+                bottom: -120px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .phone-container {
+                transform: scale(0.7);
+                margin: -80px auto;
+            }
+            
+            .app-title h1 {
+                font-size: 1.8rem;
+            }
+
+            .phone-label {
+                bottom: -140px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="app-title">
+            <h1><i class="fas fa-robot" style="margin-right: 15px;"></i>芯宠工场 AI玩具伙伴</h1>
+            <p>🌈 可爱儿童版治愈系AI陪伴应用 - 高保真原型展示 ✨</p>
+        </div>
+        
+        <div class="phone-grid">
+            <div class="phone-container">
+                <div class="phone-screen">
+                    <iframe src="home.html"></iframe>
+                </div>
+                <div class="phone-label">🏠 连接设备页</div>
+            </div>
+            
+            <div class="phone-container">
+                <div class="phone-screen">
+                    <iframe src="device-scan.html"></iframe>
+                </div>
+                <div class="phone-label">🔍 设备扫描页</div>
+            </div>
+            
+            <div class="phone-container">
+                <div class="phone-screen">
+                    <iframe src="network.html"></iframe>
+                </div>
+                <div class="phone-label">📶 连接网络页</div>
+            </div>
+            
+            <div class="phone-container">
+                <div class="phone-screen">
+                    <iframe src="wifi-password.html"></iframe>
+                </div>
+                <div class="phone-label">🔐 网络密码输入页</div>
+            </div>
+            
+            <div class="phone-container">
+                <div class="phone-screen">
+                    <iframe src="character-selection.html"></iframe>
+                </div>
+                <div class="phone-label">🎭 角色选择页</div>
+            </div>
+            
+            <div class="phone-container">
+                <div class="phone-screen">
+                    <iframe src="character.html"></iframe>
+                </div>
+                <div class="phone-label">⚙️ 角色配置页</div>
+            </div>
+            
+            <div class="phone-container">
+                <div class="phone-screen">
+                    <iframe src="chat.html"></iframe>
+                </div>
+                <div class="phone-label">💬 角色聊天界面</div>
+            </div>
+            
+            <div class="phone-container">
+                <div class="phone-screen">
+                    <iframe src="settings.html"></iframe>
+                </div>
+                <div class="phone-label">⚙️ 设备设置页</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
